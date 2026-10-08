@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pydantic-knowledge"
+version = "0.1.0"
+description = "Typed, composable, ontology-backed documentation authored in Python."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.10", "Markdown>=3.7", "pymdown-extensions>=10.14", "Pygments>=2.18", "PyYAML>=6"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.11"]
+evals = ["pydantic-evals"]
+
+[project.scripts]
+pydantic-knowledge = "pydantic_knowledge.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pydantic_knowledge"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B", "SIM"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/examples", "/tests", "/README.md", "/pyproject.toml", "/.gitignore"]

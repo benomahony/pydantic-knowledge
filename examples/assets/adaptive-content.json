@@ -1,0 +1,941 @@
+[
+  {
+    "id": "agents",
+    "title": "Agents",
+    "eyebrow": "Core concepts",
+    "summary": "Agents combine a model, instructions, tools, dependencies and an output contract into a typed run interface.",
+    "route_when": "Start here when the user is creating or understanding an agent, its lifecycle, configuration, or run methods.",
+    "source_url": "https://pydantic.dev/docs/ai/core-concepts/agent/",
+    "blocks": [
+      {
+        "id": "lead",
+        "kind": "lead",
+        "title": null,
+        "body": "An Agent is the main unit you configure and run. It owns the model-facing contract while keeping dependencies and output types visible to Python's type system.",
+        "code": null,
+        "intents": [
+          "build",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "quick",
+        "kind": "code",
+        "title": "Smallest useful agent",
+        "body": "",
+        "code": "from pydantic_ai import Agent\n\nagent = Agent(\n    'openai:gpt-5.2',\n    instructions='Answer clearly and briefly.',\n)\n\nresult = agent.run_sync('Why use typed agent outputs?')\nprint(result.output)",
+        "intents": [
+          "build"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "concept",
+        "kind": "concept",
+        "title": "Think in contracts",
+        "body": "The useful mental model is not \u2018chatbot\u2019. An agent is a typed boundary around a model interaction: dependencies come in, tools are available during the run, and output leaves through a declared contract.",
+        "code": null,
+        "intents": [
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "api",
+        "kind": "api",
+        "title": "Core surface",
+        "body": "The core methods are run(), run_sync(), and streaming variants. Configuration usually starts with model, instructions, deps_type and output_type.",
+        "code": null,
+        "intents": [
+          "reference"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      }
+    ],
+    "next": [
+      {
+        "target": "output",
+        "when": "The user wants typed, structured, validated, or streamed final output."
+      },
+      {
+        "target": "tools",
+        "when": "The agent needs to call application functions or external systems."
+      },
+      {
+        "target": "dependencies",
+        "when": "Tools or instructions need request-scoped application state or services."
+      },
+      {
+        "target": "testing",
+        "when": "The user wants to test agent code without real model calls."
+      },
+      {
+        "target": "messages",
+        "when": "The user needs multi-turn conversation state or message history."
+      }
+    ],
+    "search_terms": [
+      "agent run run_sync instructions system prompt lifecycle"
+    ]
+  },
+  {
+    "id": "output",
+    "title": "Output",
+    "eyebrow": "Core concepts",
+    "summary": "Declare what an agent is allowed to return, from text to typed Pydantic models, then validate it before the run completes.",
+    "route_when": "Use when the user cares about structured output, output types, semantic validation, streaming output, or final response contracts.",
+    "source_url": "https://pydantic.dev/docs/ai/core-concepts/output/",
+    "blocks": [
+      {
+        "id": "lead",
+        "kind": "lead",
+        "title": null,
+        "body": "Output is the final value of an agent run. Pydantic AI preserves the output type through AgentRunResult, so the final value can be ordinary text or a typed Python object.",
+        "code": null,
+        "intents": [
+          "build",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "typed",
+        "kind": "code",
+        "title": "Typed output",
+        "body": "",
+        "code": "from pydantic import BaseModel\nfrom pydantic_ai import Agent\n\nclass CityLocation(BaseModel):\n    city: str\n    country: str\n\nagent = Agent('google:gemini-3-flash-preview', output_type=CityLocation)\nresult = agent.run_sync('Where were the 2012 Olympics held?')\nprint(result.output)",
+        "intents": [
+          "build"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "shape-vs-meaning",
+        "kind": "concept",
+        "title": "Shape first, meaning second",
+        "body": "Use the output type for structural constraints. Use an output validator when a value is structurally valid but still unacceptable for your domain.",
+        "code": null,
+        "intents": [
+          "fix",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "pitfall",
+        "kind": "pitfall",
+        "title": "Don't validate everything twice",
+        "body": "If Pydantic can express the rule directly in the output model, prefer that. Reserve output validators for semantic, contextual or I/O-dependent checks.",
+        "code": null,
+        "intents": [
+          "fix"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "api",
+        "kind": "api",
+        "title": "Relevant API",
+        "body": "Agent(..., output_type=...), Agent.output_validator, AgentRunResult.output, run_stream() and streamed result APIs.",
+        "code": null,
+        "intents": [
+          "reference"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      }
+    ],
+    "next": [
+      {
+        "target": "output-validators",
+        "when": "The output has the correct structure but must satisfy extra semantic or I/O-backed rules."
+      },
+      {
+        "target": "retries",
+        "when": "The user wants to understand or configure how invalid model behavior gets another attempt."
+      },
+      {
+        "target": "streaming",
+        "when": "The user wants output incrementally rather than only after the run completes."
+      },
+      {
+        "target": "testing",
+        "when": "The user wants to test structured outputs without real model calls."
+      }
+    ],
+    "search_terms": [
+      "output_type structured output pydantic model output validator streamed result"
+    ]
+  },
+  {
+    "id": "output-validators",
+    "title": "Output validators",
+    "eyebrow": "Output",
+    "summary": "Validate semantically correct output after Pydantic has parsed it, and use ModelRetry when the model should try again.",
+    "route_when": "Choose when the output shape is valid but content must meet a rule, may require I/O, or should trigger ModelRetry.",
+    "source_url": "https://pydantic.dev/docs/ai/core-concepts/output/#output-validators",
+    "blocks": [
+      {
+        "id": "lead",
+        "kind": "lead",
+        "title": null,
+        "body": "Output validators run on the typed result. They are a good fit for checks that are awkward in a Pydantic validator, especially async or I/O-backed validation.",
+        "code": null,
+        "intents": [
+          "build",
+          "fix",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "retry",
+        "kind": "code",
+        "title": "Reject and retry",
+        "body": "",
+        "code": "from pydantic_ai import Agent, ModelRetry, RunContext\n\nagent = Agent('openai:gpt-5.2')\n\n@agent.output_validator\ndef validate_output(ctx: RunContext, output: str) -> str:\n    if ctx.partial_output:\n        return output\n    if len(output) < 50:\n        raise ModelRetry('Output is too short.')\n    return output",
+        "intents": [
+          "build",
+          "fix"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "modelretry",
+        "kind": "concept",
+        "title": "ModelRetry is feedback",
+        "body": "Raising ModelRetry keeps the failure inside the agent loop. The model gets another attempt with feedback instead of the condition escaping immediately as an application error.",
+        "code": null,
+        "intents": [
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "stream-pitfall",
+        "kind": "pitfall",
+        "title": "Streaming calls validators on partial output",
+        "body": "When streaming, validators may run on partial output. Check ctx.partial_output if your rule only makes sense for the complete result.",
+        "code": null,
+        "intents": [
+          "fix"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "test",
+        "kind": "testing",
+        "title": "Test the failure path",
+        "body": "Test both acceptance and retry/exhaustion behavior. The useful contract is not that the validator function ran; it is that unacceptable model output cannot silently become application output.",
+        "code": null,
+        "intents": [
+          "build",
+          "fix"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep"
+        ],
+        "essential": false
+      },
+      {
+        "id": "api",
+        "kind": "api",
+        "title": "API surface",
+        "body": "@agent.output_validator, RunContext.partial_output, ModelRetry.",
+        "code": null,
+        "intents": [
+          "reference"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      }
+    ],
+    "next": [
+      {
+        "target": "retries",
+        "when": "The user wants retry limits, exhaustion behavior, or the retry lifecycle."
+      },
+      {
+        "target": "streaming",
+        "when": "The user is validating streamed or partial output."
+      },
+      {
+        "target": "testing",
+        "when": "The user wants to prove validator and retry behavior in tests."
+      }
+    ],
+    "search_terms": [
+      "output validator ModelRetry semantic validation invalid answer retry"
+    ]
+  },
+  {
+    "id": "retries",
+    "title": "Retries",
+    "eyebrow": "Core concepts",
+    "summary": "Use retryable errors when the model can recover from feedback, and keep retry limits explicit.",
+    "route_when": "Use when the user asks about ModelRetry, tool retries, retry limits, or what happens after validation failure.",
+    "source_url": "https://pydantic.dev/docs/ai/core-concepts/retries/",
+    "blocks": [
+      {
+        "id": "lead",
+        "kind": "lead",
+        "title": null,
+        "body": "Retries are for model behavior that is wrong but recoverable. They turn a concrete failure into feedback and give the model another attempt within a bounded run.",
+        "code": null,
+        "intents": [
+          "build",
+          "fix",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "tool",
+        "kind": "code",
+        "title": "A retrying tool",
+        "body": "",
+        "code": "from pydantic_ai import Agent, ModelRetry\n\nagent = Agent('openai:gpt-5.2')\n\n@agent.tool_plain(retries=2)\ndef lookup_customer(customer_id: int) -> str:\n    if customer_id <= 0:\n        raise ModelRetry('customer_id must be positive')\n    return f'customer:{customer_id}'",
+        "intents": [
+          "build",
+          "fix"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "boundary",
+        "kind": "concept",
+        "title": "Retry only recoverable behavior",
+        "body": "A useful boundary: ModelRetry means the model can plausibly do better with feedback. Infrastructure failures and programmer errors should not be disguised as model retries.",
+        "code": null,
+        "intents": [
+          "fix",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "api",
+        "kind": "api",
+        "title": "API surface",
+        "body": "ModelRetry and per-tool retries=... are the main pieces to look for when tracing retry behavior.",
+        "code": null,
+        "intents": [
+          "reference"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      }
+    ],
+    "next": [
+      {
+        "target": "output-validators",
+        "when": "The retry originates from semantic validation of a final output."
+      },
+      {
+        "target": "tools",
+        "when": "The retry originates inside a function tool."
+      },
+      {
+        "target": "testing",
+        "when": "The user wants to verify retry and exhaustion behavior."
+      }
+    ],
+    "search_terms": [
+      "ModelRetry retries retry limit tool retries unexpected model behavior"
+    ]
+  },
+  {
+    "id": "tools",
+    "title": "Function tools",
+    "eyebrow": "Tools & toolsets",
+    "summary": "Expose typed Python functions to the model, with RunContext when a tool needs access to dependencies.",
+    "route_when": "Use when the agent should call application functions, APIs, databases, or any typed tool during a run.",
+    "source_url": "https://pydantic.dev/docs/ai/tools-toolsets/tools/",
+    "blocks": [
+      {
+        "id": "lead",
+        "kind": "lead",
+        "title": null,
+        "body": "Function tools expose ordinary typed Python functions to the model. Use @agent.tool when the function needs RunContext; use @agent.tool_plain when it does not.",
+        "code": null,
+        "intents": [
+          "build",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "code",
+        "kind": "code",
+        "title": "Context-aware tool",
+        "body": "",
+        "code": "from pydantic_ai import Agent, RunContext\n\nagent = Agent('google:gemini-3-flash-preview', deps_type=str)\n\n@agent.tool\ndef get_player_name(ctx: RunContext[str]) -> str:\n    return ctx.deps\n\nresult = agent.run_sync('What is my name?', deps='Anne')",
+        "intents": [
+          "build"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "concept",
+        "kind": "concept",
+        "title": "Tool schemas are part of the model contract",
+        "body": "Type hints and docstrings become part of what the model sees. Clear signatures are therefore both Python API design and model interface design.",
+        "code": null,
+        "intents": [
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "pitfall",
+        "kind": "pitfall",
+        "title": "Don't smuggle app state into globals",
+        "body": "If a tool depends on request-scoped services or state, pass that through dependencies and RunContext instead of hidden mutable globals.",
+        "code": null,
+        "intents": [
+          "fix"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "api",
+        "kind": "api",
+        "title": "API surface",
+        "body": "@agent.tool, @agent.tool_plain, tools=..., Tool and RunContext.",
+        "code": null,
+        "intents": [
+          "reference"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      }
+    ],
+    "next": [
+      {
+        "target": "dependencies",
+        "when": "Tools need typed request-scoped state, services, credentials, or clients."
+      },
+      {
+        "target": "retries",
+        "when": "A tool needs to reject bad model arguments and ask for another call."
+      },
+      {
+        "target": "testing",
+        "when": "The user wants to exercise tool calls without paying for a real model."
+      }
+    ],
+    "search_terms": [
+      "tool tool_plain RunContext function tool tools external api"
+    ]
+  },
+  {
+    "id": "dependencies",
+    "title": "Dependencies",
+    "eyebrow": "Core concepts",
+    "summary": "Pass request-scoped services and state into an agent run with deps_type and access them through RunContext.",
+    "route_when": "Use when tools or instructions need databases, clients, tenant state, user context, or other injected services.",
+    "source_url": "https://pydantic.dev/docs/ai/core-concepts/dependencies/",
+    "blocks": [
+      {
+        "id": "lead",
+        "kind": "lead",
+        "title": null,
+        "body": "Dependencies make application context explicit. Declare deps_type on the agent and pass the concrete dependency value when the run starts.",
+        "code": null,
+        "intents": [
+          "build",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "code",
+        "kind": "code",
+        "title": "Typed dependency",
+        "body": "",
+        "code": "from dataclasses import dataclass\nfrom pydantic_ai import Agent, RunContext\n\n@dataclass\nclass Deps:\n    tenant: str\n\nagent = Agent('openai:gpt-5.2', deps_type=Deps)\n\n@agent.instructions\ndef tenant_instruction(ctx: RunContext[Deps]) -> str:\n    return f'Tenant: {ctx.deps.tenant}'\n\nresult = agent.run_sync('Summarise my account', deps=Deps(tenant='acme'))",
+        "intents": [
+          "build"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "concept",
+        "kind": "concept",
+        "title": "Keep dependencies boring",
+        "body": "Dependencies are ordinary application objects. This keeps agent code testable and means your domain services do not need to know anything about the model layer.",
+        "code": null,
+        "intents": [
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "api",
+        "kind": "api",
+        "title": "API surface",
+        "body": "Agent(..., deps_type=...), RunContext[Deps], run(..., deps=...).",
+        "code": null,
+        "intents": [
+          "reference"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      }
+    ],
+    "next": [
+      {
+        "target": "tools",
+        "when": "The dependency is consumed by model-callable functions."
+      },
+      {
+        "target": "testing",
+        "when": "The user wants to substitute fakes or controlled dependencies in tests."
+      }
+    ],
+    "search_terms": [
+      "deps deps_type RunContext dependency injection service database client state"
+    ]
+  },
+  {
+    "id": "testing",
+    "title": "Testing agents",
+    "eyebrow": "Testing",
+    "summary": "Use TestModel or FunctionModel and Agent.override so tests exercise agent code without real LLM latency, cost, or variability.",
+    "route_when": "Use when the user wants unit tests, deterministic model behavior, no real model requests, or model overrides.",
+    "source_url": "https://pydantic.dev/docs/ai/guides/testing/",
+    "blocks": [
+      {
+        "id": "lead",
+        "kind": "lead",
+        "title": null,
+        "body": "Pydantic AI provides test models so application tests do not need a frontier model call. The useful target is your agent behavior and integration code, not a mocked SDK surface.",
+        "code": null,
+        "intents": [
+          "build",
+          "fix",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "code",
+        "kind": "code",
+        "title": "Override the model",
+        "body": "",
+        "code": "from pydantic_ai.models.test import TestModel\n\nwith agent.override(model=TestModel()):\n    result = agent.run_sync('exercise this path')\n    assert result.output",
+        "intents": [
+          "build",
+          "fix"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "model-requests",
+        "kind": "pitfall",
+        "title": "Fail closed in unit tests",
+        "body": "Set models.ALLOW_MODEL_REQUESTS = False in test suites so an accidental production-model request fails rather than silently spending money or introducing network variability.",
+        "code": null,
+        "intents": [
+          "fix"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "function-model",
+        "kind": "concept",
+        "title": "Use FunctionModel for deliberate behavior",
+        "body": "TestModel is procedural and schema-driven. Use FunctionModel when a test needs controlled domain-specific model behavior rather than merely valid tool/output shapes.",
+        "code": null,
+        "intents": [
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "api",
+        "kind": "api",
+        "title": "API surface",
+        "body": "TestModel, FunctionModel, Agent.override, capture_run_messages, models.ALLOW_MODEL_REQUESTS.",
+        "code": null,
+        "intents": [
+          "reference"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      }
+    ],
+    "next": [
+      {
+        "target": "output-validators",
+        "when": "The test should prove semantic output validation and retry behavior."
+      },
+      {
+        "target": "tools",
+        "when": "The test focuses on tool calls and tool returns."
+      },
+      {
+        "target": "dependencies",
+        "when": "The test substitutes request-scoped application dependencies."
+      }
+    ],
+    "search_terms": [
+      "test TestModel FunctionModel Agent.override ALLOW_MODEL_REQUESTS unit testing pytest"
+    ]
+  },
+  {
+    "id": "messages",
+    "title": "Messages and chat history",
+    "eyebrow": "Core concepts",
+    "summary": "Carry previous model and user messages into later runs when building a multi-turn interaction.",
+    "route_when": "Use when the user asks about chat history, multi-turn conversations, previous messages, or continuing a prior run.",
+    "source_url": "https://pydantic.dev/docs/ai/core-concepts/message-history/",
+    "blocks": [
+      {
+        "id": "lead",
+        "kind": "lead",
+        "title": null,
+        "body": "A run can receive earlier messages as message_history, allowing a later model request to continue from the same conversation state.",
+        "code": null,
+        "intents": [
+          "build",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "code",
+        "kind": "code",
+        "title": "Continue a conversation",
+        "body": "",
+        "code": "result1 = agent.run_sync('What is the capital of France?')\nresult2 = agent.run_sync(\n    'And what is its population?',\n    message_history=result1.all_messages(),\n)",
+        "intents": [
+          "build"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "concept",
+        "kind": "concept",
+        "title": "History is data",
+        "body": "Treat message history as application state you deliberately retain, transform, compact or persist\u2014not as magic memory inside the model.",
+        "code": null,
+        "intents": [
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "api",
+        "kind": "api",
+        "title": "API surface",
+        "body": "message_history=..., result.all_messages(), result.new_messages().",
+        "code": null,
+        "intents": [
+          "reference"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      }
+    ],
+    "next": [
+      {
+        "target": "agents",
+        "when": "The user needs the broader run lifecycle and agent configuration."
+      }
+    ],
+    "search_terms": [
+      "messages chat history message_history multi turn conversation previous run"
+    ]
+  },
+  {
+    "id": "streaming",
+    "title": "Streaming output",
+    "eyebrow": "Output",
+    "summary": "Consume text or structured output incrementally while retaining typed run semantics.",
+    "route_when": "Use when the user asks about incremental output, streamed results, partial output, or reducing perceived response latency.",
+    "source_url": "https://pydantic.dev/docs/ai/core-concepts/output/#streamed-results",
+    "blocks": [
+      {
+        "id": "lead",
+        "kind": "lead",
+        "title": null,
+        "body": "Streaming lets your application consume output before the entire run has completed. The important wrinkle is that partial structured output may not yet satisfy rules that only make sense on the final value.",
+        "code": null,
+        "intents": [
+          "build",
+          "learn"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "code",
+        "kind": "code",
+        "title": "Stream text",
+        "body": "",
+        "code": "async with agent.run_stream('Tell me a short story') as result:\n    async for text in result.stream_text():\n        print(text)",
+        "intents": [
+          "build"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": true
+      },
+      {
+        "id": "pitfall",
+        "kind": "pitfall",
+        "title": "Partial output is genuinely partial",
+        "body": "If you use output validators during streaming, inspect RunContext.partial_output before enforcing invariants that require a complete result.",
+        "code": null,
+        "intents": [
+          "fix"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "balanced"
+        ],
+        "essential": false
+      },
+      {
+        "id": "api",
+        "kind": "api",
+        "title": "API surface",
+        "body": "run_stream(), StreamedRunResult, stream_text(), partial output handling.",
+        "code": null,
+        "intents": [
+          "reference"
+        ],
+        "min_python_level": "new",
+        "densities": [
+          "deep",
+          "concise",
+          "balanced"
+        ],
+        "essential": false
+      }
+    ],
+    "next": [
+      {
+        "target": "output-validators",
+        "when": "The user needs to validate streaming or final output."
+      },
+      {
+        "target": "output",
+        "when": "The user needs the broader output contract and structured output modes."
+      }
+    ],
+    "search_terms": [
+      "stream run_stream partial output streaming structured output latency"
+    ]
+  }
+]
