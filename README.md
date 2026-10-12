@@ -34,6 +34,16 @@ uv run pytest
 uv run ruff check src tests examples/pydantic_ai_docs.py examples/eval_docs.py
 ```
 
+## Publish to GitHub Pages
+
+`.github/workflows/pages.yml` runs the tests, builds the site plus the single-file export,
+and deploys them to GitHub Pages on every change to `main`. To turn it on, set
+**Settings → Pages → Source** to **GitHub Actions**. The site is then served at
+`https://<owner>.github.io/<repo>/`, and the single file at `…/pydantic-ai-single.html`.
+
+Each page shows a one-line notice saying it is an unofficial prototype, with a link to the
+official docs. It comes from `Branding.notice` and `Branding.notice_link` in the example.
+
 ## Author a knowledge base
 
 ```python

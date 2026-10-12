@@ -5,6 +5,6 @@
 - examples/pydantic_ai_content/: full local documentation corpus
 - examples/update_snapshot.py: refresh the corpus from an upstream checkout
 - examples/eval_docs.py: native Pydantic Evals
-- tests/: 31 tests
+- tests/: 32 tests
 - site/: generated preview
 - outputs/: site, offline, single-file, and evaluation outputs

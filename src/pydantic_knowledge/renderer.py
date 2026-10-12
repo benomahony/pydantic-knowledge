@@ -769,6 +769,15 @@ _THEME_ICONS = (
 )
 
 
+def _notice_html(kb: KnowledgeBase) -> str:
+    brand = kb.branding
+    if not brand.notice:
+        return ""
+    link = brand.notice_link
+    more = f' <a href="{_e(link.url)}">{_e(link.label)}</a>' if link else ""
+    return f'<div class="site-notice" role="note">{_e(brand.notice)}{more}</div>\n'
+
+
 def _brand_html(kb: KnowledgeBase, ctx: _Ctx) -> str:
     brand = kb.branding
     if brand.logo_svg:
@@ -831,7 +840,7 @@ def _document(
 </head>
 <body data-target="{ctx.target.value}" data-prefix="{_e(ctx.prefix)}" data-page="{_e(current or "")}">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header"><div class="header-inner">
+{_notice_html(kb)}<header class="site-header"><div class="header-inner">
 <label class="menu-button" for="nav-toggle" aria-label="Toggle navigation">{_MENU_ICON}</label>
 {_brand_html(kb, ctx)}{_product_nav(kb)}
 <div class="header-tools"><button type="button" class="search-trigger" id="search-open" aria-haspopup="dialog" aria-label="Search the documentation">{_SEARCH_ICON}<span>Search</span><kbd>⌘K</kbd></button>

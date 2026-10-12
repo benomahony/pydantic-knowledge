@@ -601,6 +601,8 @@ DOCS = docs(
             BrandLink(label="Pydantic AI", url="https://ai.pydantic.dev/", current=True),
             BrandLink(label="Pydantic Logfire", url="https://logfire.pydantic.dev/"),
         ),
+        notice="Unofficial prototype built from the Pydantic AI docs. Not maintained by Pydantic.",
+        notice_link=BrandLink(label="Read the official docs", url="https://ai.pydantic.dev/"),
     ),
     home="agent-run",
     domains=[

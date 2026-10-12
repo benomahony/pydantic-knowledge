@@ -111,3 +111,16 @@ def test_implementation_pages_say_what_they_are(tmp_path):
     assert model.count("<details class=\"nav-group\" open>") == 1
     # Previous/next follow the domain order, not the goal shortcut that lists it first.
     assert 'rel="prev" href="../concepts/realtime.html"' in model or 'rel="prev" href="../concepts/audio.html"' in model
+
+
+def test_notice_appears_above_the_header(tmp_path):
+    from pydantic_knowledge.models import BrandLink
+
+    kb = knowledge()
+    branding = kb.branding.model_copy(
+        update={"notice": "Unofficial <prototype>", "notice_link": BrandLink(label="Official", url="https://x.test/")}
+    )
+    out = build(kb.model_copy(update={"branding": branding}), tmp_path / "site")
+    page = (out / "concepts" / "model.html").read_text()
+    assert '<div class="site-notice" role="note">Unofficial &lt;prototype&gt; <a href="https://x.test/">Official</a></div>' in page
+    assert page.index("site-notice") < page.index("<header")

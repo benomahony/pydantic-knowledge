@@ -146,6 +146,9 @@ uv run pydantic-knowledge build examples/pydantic_ai_docs.py --out site
 python -m http.server --directory site     # then open http://localhost:8000
 ```
 
+Or read the hosted build, if the repository has GitHub Pages enabled (see the README).
+Every page there is marked as an unofficial prototype and links to the official docs.
+
 Other targets and checks:
 
 ```bash

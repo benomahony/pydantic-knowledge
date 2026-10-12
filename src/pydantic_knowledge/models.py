@@ -228,6 +228,9 @@ class Branding(StrictModel):
     logo_svg: str | None = None
     logo_svg_dark: str | None = None
     links: tuple[BrandLink, ...] = ()
+    # A one-line notice above the header, e.g. to mark an unofficial build.
+    notice: str | None = None
+    notice_link: BrandLink | None = None
 
 
 class DecisionConfig(StrictModel):
