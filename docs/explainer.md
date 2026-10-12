@@ -32,6 +32,8 @@ with its core concepts, then its guides and integrations grouped by family, then
 reference for that domain. Goals ("Build my first agent", "Get reliable answers", …) come first
 as entry points. If a placement changes, the navigation changes on the next build.
 
+In each comparison below, the official page is on top and the generated one underneath.
+
 ![Official vs generated: the Agents page](images/ia-agents.png)
 
 The same page can now sit somewhere more useful. Shell is an execution environment, so it
@@ -116,8 +118,8 @@ and no model experiment has been supplied yet.
 
 The shell follows the unified docs at pydantic.dev/docs. The header, column widths, zinc
 neutrals, type scale and code frames were measured from the live site, as were the callout
-palette, annotations, copy buttons and search dialog. Each pair below shows the same page,
-viewport and scroll position:
+palette, annotations, copy buttons and search dialog. Each pair below shows the official page above
+and ours below, at the same viewport and scroll position:
 
 ![Code frames and annotations](images/parity-code.png)
 
